@@ -32,6 +32,16 @@ public class UserServiceImpl implements UserService {
         return repo.save(user);
     }
 
+    @Override
+    public User update(Integer id, User updUser) {
+        User entity = repo.findById(id).orElse(null);
+        if(null == entity) {
+            //TODO tratar esta exceçao
+        }
+        updUser.setId(id);
+        return repo.save(updUser);
+    }
+
     private void findByEmail(String email) {
         Optional<User> entity = repo.findByEmail(email);
         if(entity.isPresent()) {
