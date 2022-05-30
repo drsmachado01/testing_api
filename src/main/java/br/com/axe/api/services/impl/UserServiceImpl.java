@@ -3,6 +3,7 @@ package br.com.axe.api.services.impl;
 import br.com.axe.api.domain.User;
 import br.com.axe.api.repositories.UserRepository;
 import br.com.axe.api.services.UserService;
+import br.com.axe.api.services.exceptions.DataIntegrityViolationException;
 import br.com.axe.api.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
+        findByEmail(user.getEmail());
         return repo.save(user);
+    }
+
+    private void findByEmail(String email) {
+        Optional<User> entity = repo.findByEmail(email);
+        if(entity.isPresent()) {
+            throw new DataIntegrityViolationException("Email já cadastrado no sistema!");
+        }
     }
 }
