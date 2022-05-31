@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
         if(null == entity) {
             //TODO tratar esta exceçao
         }
+        findByEmail(updUser.getEmail());
         updUser.setId(id);
         return repo.save(updUser);
     }
