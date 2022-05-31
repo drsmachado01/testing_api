@@ -28,24 +28,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        findByEmail(user.getEmail());
+        findByEmail(user);
         return repo.save(user);
     }
 
     @Override
     public User update(Integer id, User updUser) {
-        User entity = repo.findById(id).orElse(null);
-        if(null == entity) {
-            //TODO tratar esta exceçao
-        }
-        findByEmail(updUser.getEmail());
+        findById(id);
+        findByEmail(updUser);
         updUser.setId(id);
         return repo.save(updUser);
     }
 
-    private void findByEmail(String email) {
-        Optional<User> entity = repo.findByEmail(email);
-        if(entity.isPresent()) {
+    @Override
+    public void delete(Integer id) {
+        repo.delete(findById(id));
+    }
+
+    private void findByEmail(User user) {
+        Optional<User> entity = repo.findByEmail(user.getEmail());
+        if(entity.isPresent() && !entity.get().getId().equals(user.getId())) {
             throw new DataIntegrityViolationException("Email já cadastrado no sistema!");
         }
     }

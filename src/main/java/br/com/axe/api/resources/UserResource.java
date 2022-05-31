@@ -5,24 +5,25 @@ import br.com.axe.api.domain.dto.UserDTO;
 import br.com.axe.api.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
 public class UserResource {
+    public static final String ID = "/{id}";
     @Autowired
     private UserService service;
 
     @Autowired
     private ModelMapper mapper;
 
-    @GetMapping("/{id}")
+    @GetMapping(ID)
     public ResponseEntity<UserDTO> findById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok().body(mapper.map(service.findById(id), UserDTO.class));
     }
@@ -36,15 +37,21 @@ public class UserResource {
 
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO user) {
-        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri().path(ID)
                 .buildAndExpand(mapper.map(service.create(
                         mapper.map(user, User.class)), UserDTO.class).getId()).toUri()).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(ID)
     public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO user) {
         return ResponseEntity.ok().body(
                 mapper.map(service.update(id, mapper.map(user, User.class)), UserDTO.class)
         );
+    }
+
+    @DeleteMapping(ID)
+    public ResponseEntity<UserDTO> delete(@PathVariable Integer id) {
+        service.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

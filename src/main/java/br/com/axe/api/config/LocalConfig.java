@@ -12,10 +12,8 @@ import java.util.List;
 @Configuration
 @Profile("local")
 public class LocalConfig {
-    @Autowired
-    private UserRepository repo;
     @Bean
-    public void startDB() {
+    public void startDB(@Autowired UserRepository repo) {
         User u1 = User.builder().
                 name("Astolpho Pamphilo").
                 email("as.tolpho@email.com").
