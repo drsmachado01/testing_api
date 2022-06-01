@@ -155,6 +155,7 @@ class UserResourceTest {
         assertNotNull(response);
         assertNull(response.getBody());
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(userService, times(1)).delete(anyInt());
     }
 
     private void init() {
