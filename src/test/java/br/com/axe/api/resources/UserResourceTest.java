@@ -148,6 +148,13 @@ class UserResourceTest {
 
     @Test
     void delete() {
+        doNothing().when(userService).delete(anyInt());
+
+        ResponseEntity<UserDTO> response = resource.delete(ID);
+
+        assertNotNull(response);
+        assertNull(response.getBody());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     private void init() {
